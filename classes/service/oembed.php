@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Atto text editor integration version file.
+ * filter text editor integration version file.
  *
- * @package    atto_oembed
+ * @package    filter_oembed
  * @copyright  Erich M. Wappis / Guy Thomas
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace atto_oembed\service;
+namespace filter_oembed\service;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -60,7 +60,7 @@ class oembed {
      */
     protected function security() {
         if (!isloggedin()) {
-            throw new \moodle_exception('error:notloggedin', 'atto_oembed', '');
+            throw new \moodle_exception('error:notloggedin', 'filter_oembed', '');
         }
     }
 
@@ -74,7 +74,7 @@ class oembed {
      */
     protected function get_cached_providers($ignorelifespan = false) {
         $cachelifespan = DAYSECS; // TODO - consider making this a config variable and add to settings.php
-        $config = get_config('atto_oembed');
+        $config = get_config('filter_oembed');
 
         // If config is present and cache fresh and available then use it
         if (!empty($config)) {
@@ -96,8 +96,8 @@ class oembed {
      * @param string $json
      */
     protected function cache_provider_json($json) {
-        set_config('providers_cached', $json, 'atto_oembed');
-        set_config('providers_cachestamp', time(), 'atto_oembed');
+        set_config('providers_cached', $json, 'filter_oembed');
+        set_config('providers_cachestamp', time(), 'filter_oembed');
     }
 
     /**
@@ -151,7 +151,7 @@ class oembed {
         }
 
         if (empty($providers)) {
-            throw new \moodle_exception('error:noproviders', 'atto_oembed', '');
+            throw new \moodle_exception('error:noproviders', 'filter_oembed', '');
         }
 
         // Cache provider json.
