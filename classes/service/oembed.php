@@ -55,6 +55,21 @@ class oembed {
     }
 
     /**
+     * Singleton
+     *
+     * @return oembed
+     */
+    public static function get_instance() {
+        /** @var $instance oembed */
+        static $instance;
+        if ($instance) {
+            return $instance;
+        } else {
+            return new oembed();
+        }
+    }
+
+    /**
      * Security checks
      * @throws \moodle_exception
      */
@@ -63,8 +78,6 @@ class oembed {
             throw new \moodle_exception('error:notloggedin', 'filter_oembed', '');
         }
     }
-
-
 
     /**
      * Get cached providers
@@ -76,16 +89,17 @@ class oembed {
      */
     protected function get_cached_providers($ignorelifespan = false) {
         $config = get_config('filter_oembed');
-        if ($config->cachelifespan == '0'){
-            $cachelifespan = 0;
-        }
-        if ($config->cachelifespan == '1'){
-            $cachelifespan = DAYSECS;
-        }
-        if ($config->cachelifespan == '2'){
-            $cachelifespan = WEEKSECS;
-        }
 
+        if (empty($config->cachelifespan )) {
+            // When unset or set to not cache.
+            $cachelifespan = 0;
+        } else if ($config->cachelifespan == '1') {
+            $cachelifespan = DAYSECS;
+        } else if ($config->cachelifespan == '2') {
+            $cachelifespan = WEEKSECS;
+        } else {
+            throw new \coding_exception('Unknown cachelifespan setting!', $config->cachelifespan);
+        }
 
         // If config is present and cache fresh and available then use it
         if (!empty($config)) {
@@ -136,7 +150,7 @@ class oembed {
 
         $this->providers = $providers;
 
-        if ($config->providers_restrict == '1'){
+        if (!empty($config->providers_restrict)) {
             // We want to restrict the providers that are used
             $whitelist=explode(',',$config->providers_allowed);
             $wlist = array();
@@ -197,7 +211,7 @@ class oembed {
         $sites = [];
         $config = get_config('filter_oembed');
 
-        if ($config->providers_restrict == '1'){
+        if (!empty($config->providers_restrict)) {
             $provider_list = $this->providers_whitelisted;
         }
         else {
@@ -328,18 +342,12 @@ class oembed {
         return '';
     }
 
-    /**
-     * Singleton
-     *
-     * @return oembed
-     */
-    public static function get_instance() {
-        /** @var $instance oembed */
-        static $instance;
-        if ($instance) {
-            return $instance;
+    public function __get($name) {
+        $allowed = ['providers', 'warnings', 'sites'];
+        if (in_array($name, $allowed)) {
+            return $this->$name;
         } else {
-            return new oembed();
+            throw new \coding_exception($name.' is not a publicly accessible property of '.get_class($this));
         }
     }
 }

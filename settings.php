@@ -35,8 +35,8 @@ use filter_oembed\service\oembed;
 if ($ADMIN->fulltree) {
 
     $targettags = [
-        'a'  =>  get_string('atag'),
-        'div'=>  get_string('divtag'),
+        'a'  =>  get_string('atag', 'filter_oembed'),
+        'div'=>  get_string('divtag', 'filter_oembed'),
     ];
 
     $cachelifespan =[
@@ -47,22 +47,21 @@ if ($ADMIN->fulltree) {
 
     $config = get_config('filter_oembed');
 
-    $item = new admin_setting_configselect('filter_oembed/cachelifespan', get_string('cachelifespan', 'filter_oembed'), get_string('cachelifespan_dec', 'filter_oembed'),'1', $cachelifespan);
+    $item = new admin_setting_configselect('filter_oembed/cachelifespan', get_string('cachelifespan', 'filter_oembed'), get_string('cachelifespan_desc', 'filter_oembed'),'1', $cachelifespan);
 
     $item = new admin_setting_configselect('filter_oembed/targettag', get_string('targettag', 'filter_oembed'),  get_string('targettag_desc', 'filter_oembed'), 'atag', ['atag' => 'atag','divtag'=>'divtag']);
     $settings->add($item);
 
-    if ($config->providers_restrict == 1) {
-
-        $providers = json_decode($config->providers_cached, true);
-
-        foreach ($providers as $provider) {
-            $providers_allowed_default[$provider['provider_name']] = $provider['provider_name'];
-        }
-
-        $item = new admin_setting_configmulticheckbox('filter_oembed/providers_allowed', get_string('providers_allowed', 'filter_oembed'), get_string('providers_allowed_desc', 'filter_oembed'), implode(',', array_values($providers_allowed_default)), $providers_allowed_default);
-        $settings->add($item);
+    $oembed = oembed::get_instance();
+    foreach ($oembed->providers as $provider) {
+        $providers_allowed_default[$provider['provider_name']] = $provider['provider_name'];
     }
+
+    $item = new admin_setting_configcheckbox('filter_oembed/providers_restrict', get_string('providers_restrict', 'filter_oembed'), get_string('providers_restrict_desc', 'filter_oembed'), '0');
+    $settings->add($item);
+
+    $item = new admin_setting_configmulticheckbox('filter_oembed/providers_allowed', get_string('providers_allowed', 'filter_oembed'), get_string('providers_allowed_desc', 'filter_oembed'), implode(',', array_values($providers_allowed_default)), $providers_allowed_default);
+    $settings->add($item);
 
     $item = new admin_setting_configcheckbox('filter_oembed/lazyload', new lang_string('lazyload', 'filter_oembed'), '', 0);
     $settings->add($item);
