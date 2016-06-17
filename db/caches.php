@@ -27,4 +27,3 @@ $definitions = array(
         'ttl' => HOURSECS,
     ),
 );
-
