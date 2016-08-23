@@ -1,8 +1,8 @@
 /**
- * Gruntfile for compiling theme_bootstrap .less files.
+ * Gruntfile for compiling filter/oembed .scss files.
  *
  * This file configures tasks to be run by Grunt
- * http://gruntjs.com/ for the current theme.
+ * http://gruntjs.com/ for filter/oembed.
  *
  * Requirements:
  * nodejs, npm, grunt-cli.
@@ -13,16 +13,16 @@
  * node dependencies: run `npm install` in the root directory.
  *
  * Usage:
- * Default behaviour is to watch all .less files and compile
+ * Default behaviour is to watch all .scss files and compile
  * into compressed CSS when a change is detected to any and then
- * clear the theme's caches. Invoke either `grunt` or `grunt watch`
- * in the theme's root directory.
+ * clear the caches. Invoke either `grunt` or `grunt watch`
+ * in the filter's root directory.
  *
- * To separately compile only moodle or editor .less files
- * run `grunt less:moodle` or `grunt less:editor` respectively.
+ * To manual compile .scss files, invoke `grunt compile` in the filter's
+ * root directory.
  *
- * To only clear the theme caches invoke `grunt exec:decache` in
- * the theme's root directory.
+ * To only clear the moodle cache invoke `grunt exec:decache` in
+ * the filter's root directory.
  *
  * @package filter
  * @subpackage oembed
