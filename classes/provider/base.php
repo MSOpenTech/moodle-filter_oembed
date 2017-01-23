@@ -105,7 +105,7 @@ class base {
             if (in_array($curl->errno, [6, 7, 28])) {
                 // Try curl call up to 3 times.
                 usleep(50000);
-                $retryno = (!is_int($retryno)) ? 0 : $retryno+1;
+                $retryno = (!is_int($retryno)) ? 0 : $retryno + 1;
                 if ($retryno < $retrylimit) {
                     return $this->getoembeddata($url, $retryno);
                 } else {

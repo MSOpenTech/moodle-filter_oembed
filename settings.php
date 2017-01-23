@@ -18,54 +18,64 @@
  * Filter for component 'filter_oembed'
  *
  * @package   filter_oembed
- * @copyright 2012 Matthew Cannings, Sandwell College; modified 2015 by Microsoft, Inc.
+ * @copyright Erich M. Wappis / Guy Thomas 2016
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * code based on the following filters...
- * Screencast (Mark Schall)
- * Soundcloud (Troy Williams)
+ * code based on the following filter
+ * oEmbed filter ( Mike Churchward, James McQuillan, Vinayak (Vin) Bhalerao, Josh Gavant and Rob Dolin)
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__.'/filter.php');
+require_once($CFG->libdir.'/formslib.php');
+
+use filter_oembed\service\oembed;
 
 if ($ADMIN->fulltree) {
-    $torf = array('1' => new lang_string('yes'), '0' => new lang_string('no'));
-    $item = new admin_setting_configselect('filter_oembed/youtube', new lang_string('youtube', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/vimeo', new lang_string('vimeo', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/ted', new lang_string('ted', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/slideshare', new lang_string('slideshare', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/officemix', new lang_string('officemix', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/issuu', new lang_string('issuu', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/soundcloud', new lang_string('soundcloud', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/pollev', new lang_string('pollev', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/o365video', new lang_string('o365video', 'filter_oembed'), '', 1, $torf);
-    $settings->add($item);
-    $item = new admin_setting_configselect('filter_oembed/sway', new lang_string('sway', 'filter_oembed'), '', 1, $torf);
+    $targettags = [
+        'a' => get_string('atag', 'filter_oembed'),
+        'div' => get_string('divtag', 'filter_oembed')
+    ];
+
+    $config = get_config('filter_oembed');
+
+    $item = new admin_setting_configselect(
+        'filter_oembed/targettag',
+        get_string('targettag', 'filter_oembed'),
+        get_string('targettag_desc', 'filter_oembed'),
+        'atag',
+        ['atag' => 'atag', 'divtag' => 'divtag']
+    );
+
     $settings->add($item);
 
-    // New provider method.
-    $providers = \filter_oembed::get_supported_providers();
-    foreach ($providers as $provider) {
-        $enabledkey = 'provider_'.$provider.'_enabled';
-        $name = new lang_string('provider_'.$provider, 'filter_oembed');
-        $item = new \admin_setting_configselect('filter_oembed/'.$enabledkey, $name, '', 1, $torf);
+    $item = new admin_setting_configcheckbox(
+        'filter_oembed/providersrestrict',
+        get_string('providersrestrict', 'filter_oembed'),
+        get_string('providersrestrict_desc', 'filter_oembed'),
+        0
+    );
+    $settings->add($item);
+
+    $targettag = get_config('filter_oembed', 'targettag');
+    if (!empty($config->providersrestrict)) {
+        oembed::get_instance(); // We have to call this to cache the providers.
+        $providers = json_decode($config->providerscached, true);
+        foreach ($providers as $provider) {
+            $providersalloweddefault[$provider['provider_name']] = $provider['provider_name'];
+        }
+
+        $item = new admin_setting_configmulticheckbox(
+            'filter_oembed/providersallowed',
+            get_string('providersallowed', 'filter_oembed'),
+            get_string('providersallowed_desc', 'filter_oembed'),
+            implode(',', array_values($providersalloweddefault)),
+            $providersalloweddefault
+        );
         $settings->add($item);
     }
 
-    $item = new admin_setting_configcheckbox('filter_oembed/lazyload', new lang_string('lazyload', 'filter_oembed'), '', 0);
+    $item = new admin_setting_configcheckbox('filter_oembed/lazyload', new lang_string('lazyload', 'filter_oembed'), '', 1);
     $settings->add($item);
-    $retrylist = array('0' => new lang_string('none'), '1' => new lang_string('once', 'filter_oembed'),
-                                                  '2' => new lang_string('times', 'filter_oembed', '2'),
-                                                  '3' => new lang_string('times', 'filter_oembed', '3'));
-    $item = new admin_setting_configselect('filter_oembed/retrylimit', new lang_string('retrylimit', 'filter_oembed'), '', '1', $retrylist);
-    $settings->add($item);
+
 }

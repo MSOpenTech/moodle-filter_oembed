@@ -15,33 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language strings for component 'filter_oembed'
+ * Filter for component 'filter_oembed'
  *
  * @package   filter_oembed
- * @copyright 2012 Matthew Cannings; modified 2015 by Microsoft Inc.
+ * @copyright Erich M. Wappis / Guy Thomas 2016
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * code based on the following filters...
- * Screencast (Mark Schall)
- * Soundcloud (Troy Williams)
+ * code based on the following filter
+ * oEmbed filter ( Mike Churchward, James McQuillan, Vinayak (Vin) Bhalerao, Josh Gavant and Rob Dolin)
  */
 
-$string['filtername'] = 'oEmbed Filter';
-$string['youtube'] = 'Youtube';
-$string['vimeo'] = 'Vimeo';
-$string['ted'] = 'Ted Talks';
-$string['slideshare'] = 'SlideShare';
-$string['officemix'] = 'Office Mix';
-$string['issuu'] = 'Issuu';
-$string['soundcloud'] = 'SoundCloud';
-$string['pollev'] = 'Poll Everywhere';
-$string['sway'] = 'Sway';
-$string['once'] = 'Once';
-$string['times'] = '{$a} times';
-$string['retrylimit'] = 'Limit to retry getting filtered content';
-$string['cachedef_embeddata'] = 'Cache for filtered content';
+$string['filtername'] = 'Oembed Filter';
+$string['cachelifespan_disabled'] = 'Cache lifespan disabled';
+$string['cachelifespan'] = 'Cache lifespan';
+$string['cachelifespan_desc'] = 'The duration of time before the providers list should be refreshed.';
+$string['cachelifespan_daily'] = '1 day';
+$string['cachelifespan_weekly'] = '1 week';
+$string['atag'] = 'Filter on &lt; a &gt; tags';
+$string['divtag'] = 'Filter on &lt; div &gt; tags';
 $string['lazyload'] = 'Delay Embed Loading (Lazyload)';
-$string['connection_error'] = 'Error while accessing the embedded media. Please try refreshing the page.';
-$string['o365video'] = 'Office 365 Video';
-$string['provider_docsdotcom'] = 'Docs.com';
-$string['provider_powerbi'] = 'Power BI';
-$string['provider_officeforms'] = 'Forms';
+$string['targettag'] = 'Target tag';
+$string['targettag_desc'] = 'What tag type should be filtered - anchors or divs with the oembed class.';
+$string['playoembed'] = 'Play';
+$string['providersrestrict'] = 'Restrict providers';
+$string['providersrestrict_desc'] = 'Restrict providers to a list of allowed providers';
+$string['providersallowed'] = 'Providers allowed.';
+$string['providersallowed_desc'] = 'Providers whitelisted to be used with this plugin';
+$string['connection_error'] = 'Error connecting to external provider, please try reloading the page.';
